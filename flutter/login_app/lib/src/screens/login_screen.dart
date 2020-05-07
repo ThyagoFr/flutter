@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import '../mixins/validate_mixin.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with Validate{
   final formKey = GlobalKey<FormState>();
+  String email = "";
+  String password = "";
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: "seuemail@example.com",
       ),
       keyboardType: TextInputType.emailAddress,
-      validator: (String email) {
-        if (!email.contains("@")) {
-          return "Please enter a valid email";
-        }
-        return null;
-      },
+      validator: validateEmail,
       onSaved: (String email) {
-        print(email);
+        this.email = email;
       },
     );
   }
@@ -61,14 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: "Password",
       ),
       obscureText: true,
-      validator: (String password) {
-        if (password.length < 6){
-          return "Password must be at least 6 characters";
-        }
-        return null;
-      },
+      validator: validatePass,
       onSaved: (String password) {
-        print(password);
+        this.password = password;
       },
     );
   }
@@ -84,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: (){
         if(formKey.currentState.validate()){
           formKey.currentState.save();
+          print("Email : $email, Password : $password");
         }
       },
       color: Colors.pink,
